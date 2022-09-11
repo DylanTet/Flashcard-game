@@ -1,13 +1,31 @@
 from tkinter import *
-from tkinter import colorchooser
 import pandas as pd
 import random
+import time
+
+def setEnglishCard():
+
+    wordPair = random.choice(frenchWordFile)
+    englishWord = wordPair["English"]
+    canvas.itemconfig(cardBackground, image=card_back_img)
+    canvas.itemconfig(title, text="English")
+    canvas.itemconfig(word, text=englishWord)
+    
 
 def nextWord():
 
+    canvas.itemconfig(cardBackground, image=card_front_img)
+    canvas.itemconfig(title, text="French")
     wordPair = random.choice(frenchWordFile)
     frenchWord = wordPair["French"]
     canvas.itemconfig(word, text=frenchWord)
+
+    canvas.after(3000, setEnglishCard())
+
+    
+    
+
+    
 
 root= Tk()
 
@@ -17,10 +35,11 @@ root.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
 
 canvas = Canvas(width=800, height=526)
 card_front_img = PhotoImage(file="images/card_front.png")
-canvas.create_image(400, 263, image=card_front_img)
+card_back_img = PhotoImage(file='images/card_back.png')
+cardBackground = canvas.create_image(400, 263, image=card_front_img)
 canvas.grid(row=0, column=0, columnspan=2)
 canvas.config(bg=BACKGROUND_COLOR, highlightthickness=0)
-title = canvas.create_text(400, 150, text="Title", font=("Ariel", 40, 'italic'), fill='#000000')
+title = canvas.create_text(400, 150, text="French", font=("Ariel", 40, 'italic'), fill='#000000')
 word = canvas.create_text(400, 300, text="word", font=("Ariel", 60, 'bold'), fill='#000000')
 
 check_button_image = PhotoImage(file="images/right.png")
