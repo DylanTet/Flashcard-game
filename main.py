@@ -1,12 +1,13 @@
 from tkinter import *
+from tkinter import colorchooser
 import pandas as pd
 import random
 
 def nextWord():
 
-    newWord = random.choice(list(frenchWordFile))
-    canvas.itemconfig(word, text=newWord)
-    print(frenchWordFile)
+    wordPair = random.choice(frenchWordFile)
+    frenchWord = wordPair["French"]
+    canvas.itemconfig(word, text=frenchWord)
 
 root= Tk()
 
@@ -19,8 +20,8 @@ card_front_img = PhotoImage(file="images/card_front.png")
 canvas.create_image(400, 263, image=card_front_img)
 canvas.grid(row=0, column=0, columnspan=2)
 canvas.config(bg=BACKGROUND_COLOR, highlightthickness=0)
-title = canvas.create_text(400, 150, text="Title", font=("Ariel", 40, 'italic'))
-word = canvas.create_text(400, 300, text="word", font=("Ariel", 60, 'bold'))
+title = canvas.create_text(400, 150, text="Title", font=("Ariel", 40, 'italic'), fill='#000000')
+word = canvas.create_text(400, 300, text="word", font=("Ariel", 60, 'bold'), fill='#000000')
 
 check_button_image = PhotoImage(file="images/right.png")
 checkButton = Button(image=check_button_image, command=nextWord)
