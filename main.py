@@ -3,35 +3,53 @@ import pandas as pd
 import random
 import time
 
+currentCard = {}
+toLearn = {}
+
+try:
+    wordList = pd.read_csv('data/words_to_learn.csv')
+    
+except FileNotFoundError:
+    originalData = pd.read_csv('data/french_words.csv')
+    toLearn = originalData.to_dict(orient="records")
+
+else:
+    toLearn = wordList.to_dict(orient="records")
+    
+
 def setEnglishCard():
 
-    wordPair = random.choice(frenchWordFile)
-    englishWord = wordPair["English"]
     canvas.itemconfig(cardBackground, image=card_back_img)
     canvas.itemconfig(title, text="English")
-    canvas.itemconfig(word, text=englishWord)
+    canvas.itemconfig(word, text=currentCard["English"])
     
 
 def nextWord():
 
+    global currentCard
     canvas.itemconfig(cardBackground, image=card_front_img)
     canvas.itemconfig(title, text="French")
-    wordPair = random.choice(frenchWordFile)
-    frenchWord = wordPair["French"]
-    canvas.itemconfig(word, text=frenchWord)
+    currentCard = random.choice(toLearn)
+    canvas.itemconfig(word, text=currentCard["French"])
 
-    canvas.after(3000, setEnglishCard())
+    root.after(3000, func=setEnglishCard)
 
+def isKnown():
     
-    
+    print(currentCard)
 
-    
+    toLearn.remove(currentCard)
+    data = pd.DataFrame(toLearn)
+    data.to_csv("data/words_to_learn.csv", index="false")
+    nextWord()
+
 
 root= Tk()
 
 BACKGROUND_COLOR = "#B1DDC6"
 root.title("Flashy")
 root.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
+
 
 canvas = Canvas(width=800, height=526)
 card_front_img = PhotoImage(file="images/card_front.png")
@@ -43,16 +61,14 @@ title = canvas.create_text(400, 150, text="French", font=("Ariel", 40, 'italic')
 word = canvas.create_text(400, 300, text="word", font=("Ariel", 60, 'bold'), fill='#000000')
 
 check_button_image = PhotoImage(file="images/right.png")
-checkButton = Button(image=check_button_image, command=nextWord)
+checkButton = Button(image=check_button_image, command=isKnown)
 checkButton.grid(column=0, row=1)
 
 wrong_button_image = PhotoImage(file="images/wrong.png")
 wrongButton = Button(image=wrong_button_image, command=nextWord)
 wrongButton.grid(column=1, row=1)
 
-# Populating the word list 
-wordList = pd.read_csv('data/french_words.csv')
-frenchWordFile = wordList.to_dict(orient="records")
+nextWord()
 
 
 
